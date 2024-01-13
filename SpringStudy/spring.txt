@@ -1,0 +1,231 @@
+SpringFramework
+SpringBoot
+
+https://spring.io/
+SpringFramework => Spring + Framework
+
+ - Framework: 어떤 대상을 구성하는 구조/틀 사용한 작업
+	=> (SW) 기능을 클래스/인터페이스 형태로 미리
+	    구현해놓은 형태를 사용하는 것
+
+ 	EJB 	=> 	Spring Framework
+      서버중심		클라이언트중심(모바일등장)
+      확장성,유지보수 	생산성,안정성	
+      중량프레임워크	경량프레임워크
+                        (확장성-다른프레임워크의 포용)
+
+ * 스프링 주요 개념/특징
+  - EJB보다 가볍고,배우기쉽다.
+  - 제어의 역행 기술을 사용해서 애플리케이션간의 느슨한 결합을 제어한다 .
+    (Inversion Of Control,IoC)
+  - 의존성 주입 기능을 사용가능.
+    (Dependecy Injection, DI)
+  - 관점지향 프로그래밍을 지원
+    (Asepect-Oriented Programming, AOP)
+  - 영속성 관련 다양한 서비스 지원
+    (Presistence)
+  - 다양한 라이브러리 지원
+  - POJO기반의 구성
+    (Plain Old Java Object)
+
+
+  * 스프링 주요 기능
+	Spring Core : 다른 기능과 설정을 분리하기위한 IoC기능 제공
+	Spring Context : 스프링 기본기능, 애플리케이션에 있는 기능(빈-객체)을
+                 	 접근하도록 기능을 제공    
+	Spring DAO :JDBC기능을 좀 더 편리하게 사용
+	Spring ORM :영속성관련 프레임워크 연동기능제공(하이버네이트,마이바티스)
+	Spring AOP : 관점지향 프로그래밍을 지원
+	Spring Web : 웹 개발에 필요한 기능을 제공
+	Spring WebMVC : 스프링MVC관련 기능 제공 
+
+
+- Spring Legacy Project (Framework)
+  WAS 사용 경험, MODEL 2 방식 개발
+  아직까지 실무에서 사용 빈도가 높음 (이전 코드)
+  구글링이 쉬움 (자료가 많다)
+  모든 버전의 스프링을 사용 가능
+  
+  초반 설정 및 세팅이 어려움
+  
+- Spring Starter Project (Boot)
+  초반 설정 및 세팅이 쉬움 (기본 제공)
+  내장 서버를 보유하고 있음 => 로딩 시간이 짧음
+  별도의 버전을 설정하지 않아도 됨 (라이브러리별 호환성 높음)
+  
+  기존 방식과 다른 형태로 개발, JSP 뷰 사용이 다소 어려움
+  
+  계층
+  * Presentation Layer : UI를 구성하는 부분 (웹, 모바일)
+  						 => html, css, js, jsp, Controller
+  * Business Layer : 서비스 계층, 요구사항을 구현하는 부분
+  					 => XXXAction
+  * Data Access Layer : 영속 계층, 데이터 처리를 수행하는 부분
+  						=> XXXDAO
+  * DataBase => MySQL, Oracle
+  
+  요청		-> Controller -> Service -> DAO -> MyBatis -> DB
+  (request)        |
+  				 View
+  				 
+  https://mybatis.org/mybatis-3/ko/				 
+  마이바티스는 무엇인가?				 
+  마이바티스는 개발자가 지정한 SQL, 저장프로시저 그리고 몇가지 고급 매핑을 
+  지원하는 퍼시스턴스 프레임워크이다. 마이바티스는 JDBC로 처리하는 상당부분의 코드와 
+  파라미터 설정및 결과 매핑을 대신해준다. 마이바티스는 데이터베이스 레코드에 
+  원시타입과 Map 인터페이스 그리고 자바 POJO 를 설정해서 매핑하기 위해 XML과 
+  애노테이션을 사용할 수 있다.		
+  => 기존에 JDBC 단점을 보완하는 프레임워크		
+  	- try-catch-finally 생략
+  	- pstmt, rs 데이터 입력 생략
+  	- SQL 구문을 분리
+  	- Spring과 연동이 자동 
+  	- 동적 SQL 지원
+  	
+  	
+  DriverManagerDataSource dataSource = new DriverManagerDataSource();
+  	|| 같은 의미
+  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+  </bean>
+  
+  dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
+  	|| 같은 의미
+  <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+  
+  
+  * 의존 객체 자동 주입 : 개발자가 주입 대상을 명시하지 않아도 자동으로 연결 (스프링 컨테이너) 
+  @Resource : Java에서 지원하는 어노테이션 (특정 프레임워크에 비종속적이다)
+  			- 의존 객체를 찾는 순서 
+  			[이름] -> [타입] -> [@Qualifier] -> 실패
+  			- 멤버 변수, set메서드에서만 사용 가능
+
+  @Inject : Java에서 지원하는 어노테이션 (특정 프레임워크에 비종속적이다)
+  			- 의존 객체를 찾는 순서
+  			[타입] -> [@Qualifier] -> [이름] -> 실패
+  			- 빌드 도구를 사용해서 해당 라이브러리 추가 필수
+  			- 멤버변수, set메서드, 생성자, 일반 메서드에서 사용 가능
+  
+  @Autowired : Spring에서 지원하는 어노테이션 (Spring에 종속적이다)
+  			- 의존 객체를 찾는 순서
+  			[타입] -> [이름] -> [@Qualifier] -> 실패
+  			- 반드시 스프링에서만 사용
+  			- 멤버변수, set메서드, 생성자, 일반 메서드에서 사용 가능
+  
+  @Qualifier : 주입하려는 대상이 여러 개 있을 때 해당 대상을 구분하기 위한 값
+  				- Qualifier 설정한 객체가 없을 경우 Exception 발생
+  
+  <bean id="dataSource1" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+  	...
+  	<qualifier value="ds1">
+  </bean>
+  
+  <bean id="dataSource2" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+  	...
+  	<qualifier value="ds2">
+  </bean>  
+  
+  ---------------------------------------------------------------------------
+  @Autowired @Qualifier("ds2")
+  private DataSource ds;
+  
+  * DAO -> MyBatis -> DB + Test (JUnit)
+  
+  1) XML을 사용하여 SQL 구문 작성, DAO 객체 생성하여 연결 [XML -> DAO]
+     - SQL 구문 수정 및 유지보수가 우수함 (컴파일 X)
+     - 개발 시 코드의 양이 증가 (복잡도 증가)
+  
+  2) 어노테이션을 사용하여 SQL 구문 작성, DAO 인터페이스를 생성해서 연결 [어노테이션 -> DAO]
+     - DAO 객체 없이 인터페이스만으로 처리 (생산성 증가)
+     - SQL 변경 시 매번 컴파일해야하는 단점
+     
+  3) XML + 어노테이션을 사용하여 SQL 구문 작성, DAO 객체 생성해서 연결 [XML + 어노테이션 -> DAO]
+     - SQL 작성 시 간단 - 어노테이션, 복잡 - XML 사용하여 처리
+     - 개발자의 역량에 따른 큰 차이가 발생 가능하다
+  
+  도메인 : 프로젝트에 중요한 단어 (용어) => 물리적인 환경으로 분리 가능한 단위
+           ex) 쇼핑몰 -> 회원, 상품, 관리자, 주문, 장바구니 (1차 도메인)
+                         이름  상품번호..                   (2차 도메인)
+     
+  * MyBatis 개발 사용 순서
+  - 데이터베이스 생성
+  - 테이블 생성, 설정 준비
+  - 도메인 객체 (클래스) 생성 => DTO / VO 생성
+  - DAO 인터페이스 생성
+  - 인터페이스에 구현해야하는 동작을 추상메서드로 선언
+  - XML (Mapper) 생성, 위치 (저장 경로 [namespace]) 설정
+  - XML mapperDTD 추가
+  - SQL 구문 작성 (태그 형태)
+  - XML (Mapper) 정보를 MyBatis에서 인식하도록 설정
+  - DAO 객체 생성
+  - 테스트 동작 수행
+  
+  [테이블 생성]
+  CREATE TABLE `springdb`.`tbl_member` (
+  `userid` VARCHAR(50) NOT NULL,
+  `userpw` VARCHAR(45) NOT NULL,
+  `username` VARCHAR(45) NOT NULL,
+  `useremail` VARCHAR(200) NOT NULL,
+  `regdate` TIMESTAMP NULL DEFAULT now(),
+  `updatedate` TIMESTAMP NULL DEFAULT now(),
+  PRIMARY KEY (`userid`));
+  
+  * log4j : 로그 출력 기능 (레벨별 출력 기능)
+  
+  1      2      3      4      5      6
+  TRACE  DEBUG  INFO   WARN   ERROR  FATAL
+               -> 심각 ->
+               
+  1 TRACE : DEBUG (2)보다 상세한 로그 정보를 출력할 때 [상세 로그]
+  2 DEBUG : 개발 시 디버깅용도로 사용하는 레벨 [디버깅]
+  3 INFO  : 실제 서비스 운영과 관련된 정보 출력 레벨 [서비스 정보]
+  4 WARN  : 시스템 오류의 원인을 출력하는 레벨 [시스템 오류 원인]
+  5 ERROR : 실행 중 문제가 발생했을 경우 출력하는 레벨 [실행 중 문제]
+  6 FATAL : 시스템 환경 자체의 심각한 문제를 출력하는 레벨 [심각]
+  
+  => 출력 설정한 레벨보다 높은 레벨의 메세지만 출력
+  
+  https://logging.apache.org/log4j/1.2/manual.html
+  
+  #{userid} => ?에 값을 담았던 동작 수행 [= pstmt.setString(1, dto.getUserid())] [~ P.106]
+  
+  
+    요청		-> Controller -> Service -> DAO -> MyBatis -> DB
+  (request)            |
+  				      View
+  				      
+  * Controller
+  [ 스프링 MVC에서 기본적으로 처리하는 작업 ]
+  - URI (주소)를 분석해서 적절한 컨트롤러를 찾는 작업 (~.me, ~.bo)
+  - 컨트롤러에 필요한 메서드를 호출
+  - 컨트롤러의 데이터 (결과)를 뷰페이지로 전달
+  - URI에 따른 뷰페이지 연결 (기존 ActionForward - path)	
+  - 파라미터 자동 수집 (VO / DTO)
+  - 테스트 / 개발 로직에 집중 가능
+  
+  [ 개발자가 수행하는 작업 ]
+  - 특정 URI에 동작하는 컨트롤러 설계 (매핑)
+  - 서비스 객체 생성 (= Action)
+  - DAO 객체 생성
+  - 컨트롤러 내부에 동작을 처리하는 메서드 설계
+  - 전달받은 데이터를 뷰페이지에 출력		
+  
+  
+  @RequestParam : 주소줄에 있는 이름 (Key)을 가진 데이터 값 (Value)을 가져오는 동작
+  (1:1 관계)
+  
+  @ModelAttribute : 주소줄에 있는 이름 (Key)을 가진 데이터 값 (Value, Bean, Collection)을 가져오는 동작
+  (1:N 관계)        => Model 객체에 담아서 정보를 뷰페이지로 전달
+  
+  Model : View 페이지로 정보를 전달하는 객체, 데이터를 이름과 값 (Value, Bean, Collection)을 저장
+  (1:N 관계)
+  
+  * Model.addAttribute()    v s    @ModelAttribute (= request.getParameter() + request.setAttribute())
+       메서드 단위                 컨트롤러 단위
+       Key, Value를 Model 저장     Key, Value 전달된 정보를 객체 생성
+                                   -> Model 객체에 전달 (덮어쓰기)
+       => 뷰페이지 전달            => 뷰페이지 전달
+  
+  RedirectAttributes
+  1) addAttribute(); : URI 주소 O, Model + RedirectAttributes 둘 다 가능, F5 데이터 유지
+  2) addFlashAttribute(); : URI 주소 X,, RedirectAttributes만 가능, F5 데이터 사라짐
+  [P. 125 ~ 128]

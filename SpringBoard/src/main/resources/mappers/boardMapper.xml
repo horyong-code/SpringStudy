@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.itwillbs.mapper.BoardMapper">
+  
+  	<!-- DB 컬럼과 도메인 객체를 매핑 -->
+  	<!-- bno 컬럼 -> VO : bno 변수에 저장 -->
+  	<!-- 프로퍼티명과 컬럼명이 동일할 때는 생략 가능 -->
+  	<resultMap type="com.itwillbs.domain.BoardVO" id="board">
+  		<result property="bno" column="bno"/>
+  		<result property="title" column="title"/>
+  		<result property="content" column="content"/>
+  		<result property="writer" column="writer"/>
+  		<result property="regdate" column="regdate"/>
+  		<result property="viewcnt" column="viewcnt"/>
+  	</resultMap>
+  
+  	<!-- 글 쓰기 -->
+  	<insert id="insertBoard">
+  		INSERT INTO tbl_board (writer, title, content)
+  		VALUES (#{writer}, #{title}, #{content})
+  	</insert>
+  	
+  	<!-- 모든 글 조회 (ALL) -->
+  	<select id="listALL" resultType="BoardVO">
+  		SELECT * FROM tbl_board
+  	</select>
+  	
+  	<!-- 특정 번호 글 정보 조회 -->
+  	<select id="getBoard" resultType="BoardVO">
+  		SELECT * FROM tbl_board WHERE bno = #{bno}
+  	</select>
+  	
+  	<!-- 특정 글 수정 -->
+  	<update id="updateBoard">
+  		UPDATE tbl_board 
+  		SET writer = #{writer}, title = #{title}, content = #{content}
+  		WHERE bno = #{bno}
+  	</update>
+  	
+  	<!-- 특정 글 조회수 1 증가 -->
+  	<!-- viewcnt = #{viewcnt} + 1 -> viewcnt를 받아와야 함 -->
+  	<update id="updateViewCnt">
+  		UPDATE tbl_board
+  		SET viewcnt = viewcnt + 1
+  		WHERE bno = #{bno}
+  	</update>
+  	
+  	<!-- 특정 글 삭제 -->
+  	<delete id="deleteBoard">
+  		DELETE FROM tbl_board
+  		WHERE bno = #{bno}
+  	</delete>
+  	
+  	<!-- 글 목록 조회 (page) -->
+  	<select id="listPage" resultType="BoardVO" resultMap="board">
+  		SELECT * FROM tbl_board LIMIT #{startPage}, #{pageSize}
+  	</select>
+  	<!-- Caused by: org.apache.ibatis.reflection.ReflectionException: 
+  	There is no getter for property named 'startPage' in 'class com.itwillbs.domain.Criteria'-->
+  	<!-- #{startPage} = cri.getStartPage() -->
+  	
+  	<!-- 전체 글 개수 -->
+  	<select id="countBoard" resultType="int">
+  		<![CDATA[
+  		SELECT COUNT(*) FROM tbl_board 
+  		WHERE bno > 0
+  		]]>
+  	</select>
+  
+  </mapper>

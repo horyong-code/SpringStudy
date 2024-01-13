@@ -1,0 +1,74 @@
+REST.txt
+
+URL : http://localhost:8080/member/join => 해당 리소스를 사용하는 방법 (찾아가는 방법)
+URI : /member/join => 리소스
+
+REST (REpresentational State Transfer) : 하나의 주소 (URI)는 하나의 고유한 데이터 (리소스)를 대표한다
+=> URL을 설계하는 방법
+
+이전 웹 : 서버에서 생성된 데이터를 브라우저에서 출력
+   ||
+요즘 웹 : 서버에서 생성된 데이터를 다양한 기기 (웹 / 모바일)에서 사용
+
+* REST API 특징
+	- 서버 / 클라이언트 구조
+	- 무상태
+	- 캐시처리 가능
+	- 계층화
+	- 인터페이스 일관성
+
+* REST API를 사용하는 방법
+    - 주소만 보고 해당 요청의 내용을 파악 가능 해야함
+    - URL 작성 시에 동사 -> 명사 사용해야 함
+      ex) /getMember?id=10 (x)
+          /member/1 (o)
+    - URL 작성시 동작은 (동사) HTTP 메서드로 결정
+      - GET / POST / PUT (PATCH) / DELETE
+      ex)
+      /articles/1 - GET => 1번글을 조회
+      /articles   - POST => 글 작성
+      /articles/1 - PUT => 1번글을 수정
+    - / (슬래시)는 계층 관계를 표시
+    - [_]보다는 [-]를 사용 권장
+    - Document / Collection : 둘 다 자원 (리소스)를 표현하는 방법
+      Document : 문서 / 객체 => 단수형으로 표시
+      Collection : 문서의 집합 / 객체들의 집합 => 복수형으로 표시
+      
+      ex) /sport/soccer -> /sports/soccer
+          /sports/soccer/선수 -> /sports/soccer/players/99
+          
+          - /작업명(대상)/기본키 + 메서드 + 데이터 (JSON)
+            /boards + 데이터  POST => 게시판에 글쓰기
+            /boards/100       GET  => 100번글 조회
+            /boards/100       DELETE => 100번글 삭제
+            /boards/100 + 데이터 PUT => 100번글 수정
+          
+* @ResponseBody => Spring 3 지원
+  @RestController => Spring 4 지원
+  
+  REST 방식은 view가 없어서 상태 확인이 어려움
+  -> HTTP 상태 코드 (HTTP status code) 사용
+  
+  * HTTP 상태 코드 : https://developer.mozilla.org/ko/docs/Web/HTTP/Status
+  - 100번대 : 현재 데이터의 처리 중인 상태
+    100 : 데이터 중의 일부를 서버가 전달받은 상태
+    
+  - 200번대 : 정상적인 응답
+    200 : 에러없이 정상 처리 (OK)
+    204 : 정상처리되었으나 서버에서 보내줄 정보가 없는 경우
+    
+  - 300번대 : URL 처리 상태
+    301 : 요청한 페이지가 다른 URL (new)로 변경
+    304 : 기존에 실행한 데이터와 변경 사항이 없음
+    
+  - 400번대 : 서버에서 인식 불가
+    400 : 전송된 요청 (request)에 문제가 발생한 경우 / 서버에서 인식 불가능 (ajax / date)
+    403 : 서버에서 페이지에 대한 권한이 없을 때
+    404 : URL에 해당하는 리소스가 없는 경우
+    405 : 전송 방식이 허락되지 않음 (REST 방식 주로 발생)
+    
+  - 500번대 : 서버 내부 문제 발생
+    500 : 서버에서 처리 시에 발생하는 문제 (문법 오류, 컴파일 오류, "런타임 오류")
+    502 : 게이트웨이 / 프록시 상태의 문제 (과부하)
+    503 : 일시적인 서버 과부하 / 서비스 중단 상태
+    504 : 지정된 처리 시간이 지나서 처리하지 못 함
